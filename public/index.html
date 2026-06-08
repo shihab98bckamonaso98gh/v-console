@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VoltX SMS — Live Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --bg2: #0f1215;
+    --bg3: #151920;
+    --bg4: #1c2230;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8edf5;
+    --text2: #8a96a8;
+    --text3: #566070;
+    --accent: #2ee5a8;
+    --accent2: rgba(46,229,168,0.15);
+    --accent3: rgba(46,229,168,0.08);
+    --fb: #1877f2;
+    --fb2: rgba(24,119,242,0.15);
+    --ig: #e1306c;
+    --ig2: rgba(225,48,108,0.15);
+    --wa: #25d366;
+    --wa2: rgba(37,211,102,0.15);
+    --tg: #2aabee;
+    --tg2: rgba(42,171,238,0.15);
+    --tw: #1da1f2;
+    --tw2: rgba(29,161,242,0.15);
+    --warn: #f59e0b;
+    --red: #ef4444;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── HEADER ─────────────────────────────── */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 52px;
+    flex-wrap: wrap;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.5; transform:scale(0.8); }
+  }
+  .header-spacer { flex: 1; }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(34,197,94,0.12);
+    color: #22c55e;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .live-badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: pulse 1.5s infinite;
+  }
+  .timer-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    white-space: nowrap;
+  }
+  .timer-display b { color: var(--accent); }
+  .refresh-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    border-radius: var(--radius-sm);
+    padding: 5px 8px;
+    cursor: pointer;
+    display: flex; align-items: center;
+    transition: all 0.15s;
+  }
+  .refresh-btn:hover { background: var(--bg4); color: var(--accent); border-color: var(--accent2); }
+  .refresh-btn.spinning svg { animation: spin 0.6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── TABS ─────────────────────────────── */
+  .tabs-bar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+    position: sticky;
+    top: 52px;
+    z-index: 99;
+  }
+  .tabs-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 8px 0;
+    scrollbar-width: none;
+  }
+  .tabs-inner::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .tab-btn:hover { background: var(--bg3); color: var(--text); }
+  .tab-btn.active {
+    color: var(--text);
+    border-color: var(--active-color, var(--accent));
+    background: var(--active-bg, var(--accent3));
+    box-shadow: 0 0 12px var(--active-glow, rgba(46,229,168,0.15));
+  }
+  .tab-btn[data-tab="all"].active   { --active-color: var(--accent); --active-bg: var(--accent3); --active-glow: rgba(46,229,168,0.15); }
+  .tab-btn[data-tab="facebook"].active { --active-color: var(--fb); --active-bg: var(--fb2); --active-glow: rgba(24,119,242,0.2); }
+  .tab-btn[data-tab="instagram"].active { --active-color: var(--ig); --active-bg: var(--ig2); --active-glow: rgba(225,48,108,0.2); }
+  .tab-btn[data-tab="whatsapp"].active { --active-color: var(--wa); --active-bg: var(--wa2); --active-glow: rgba(37,211,102,0.2); }
+  .tab-btn[data-tab="telegram"].active { --active-color: var(--tg); --active-bg: var(--tg2); --active-glow: rgba(42,171,238,0.2); }
+  .tab-btn[data-tab="twitter"].active { --active-color: var(--tw); --active-bg: var(--tw2); --active-glow: rgba(29,161,242,0.2); }
+  .tab-count {
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--border);
+    color: var(--text3);
+    min-width: 20px;
+    text-align: center;
+  }
+  .tab-btn.active .tab-count { background: rgba(255,255,255,0.1); color: var(--text2); }
+
+  /* ─── BRAND HEADER (shown on filtered tabs) ─── */
+  .brand-header {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 16px 0;
+    display: none;
+  }
+  .brand-header.visible { display: block; }
+  .brand-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  /* ─── SEARCH BAR ─────────────────────────── */
+  .search-wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 12px 16px;
+  }
+  .search-inner {
+    position: relative;
+  }
+  .search-icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px 9px 36px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+
+  /* ─── CONSOLE BODY ─────────────────────── */
+  .console-wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 16px 24px;
+  }
+  .console-body {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  /* ─── LOG LINE ─────────────────────────── */
+  .cn-line {
+    display: flex;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+    transition: background 0.1s;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .cn-line:last-child { border-bottom: none; }
+  .cn-line:hover { background: rgba(255,255,255,0.02); }
+
+  .cn-line-meta {
+    flex-shrink: 0;
+    width: 120px;
+  }
+  @media (max-width: 600px) { .cn-line-meta { width: 90px; } }
+
+  .cn-line-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .cn-line-carrier {
+    font-size: 10px;
+    color: var(--text3);
+    display: block;
+    line-height: 1.4;
+  }
+  .cn-line-numinfo {
+    font-size: 10px;
+    color: var(--text3);
+    display: block;
+    line-height: 1.4;
+  }
+
+  .cn-line-body { flex: 1; min-width: 0; }
+
+  .cn-line-tags {
+    display: flex; align-items: center; gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+  }
+
+  .cn-line-app {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .app-facebook  { background: var(--fb2); color: var(--fb); }
+  .app-instagram { background: var(--ig2); color: var(--ig); }
+  .app-whatsapp  { background: var(--wa2); color: var(--wa); }
+  .app-telegram  { background: var(--tg2); color: var(--tg); }
+  .app-twitter   { background: var(--tw2); color: var(--tw); }
+  .app-other     { background: rgba(255,255,255,0.05); color: var(--text3); }
+
+  .cn-line-sep { color: var(--text3); font-size: 11px; }
+
+  .cn-line-range {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent3);
+    border: 1px solid rgba(46,229,168,0.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    position: relative;
+  }
+  .cn-line-range:hover {
+    background: var(--accent2);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(46,229,168,0.25);
+    transform: scale(1.02);
+  }
+  .cn-line-range:active { transform: scale(0.97); }
+  .cn-line-range.copied {
+    background: rgba(34,197,94,0.2);
+    border-color: #22c55e;
+    color: #22c55e;
+  }
+
+  .cn-line-sms {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.6;
+    word-break: break-word;
+  }
+  .cn-arrow { color: var(--text3); margin-right: 4px; }
+
+  /* ─── FOOTER ───────────────────────────── */
+  .console-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 14px;
+    border-top: 1px solid var(--border);
+    background: var(--bg3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* ─── EMPTY STATE ──────────────────────── */
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--text3);
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .empty-state svg { opacity: 0.3; }
+
+  /* ─── TOAST ─────────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--bg3);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    z-index: 9999;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.2s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ─── LOADING ───────────────────────────── */
+  .loading-bar {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    background-size: 200% 100%;
+    animation: loading 1.2s linear infinite;
+    display: none;
+  }
+  .loading-bar.active { display: block; }
+  @keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ─── STATUS BAR ─────────────────────────── */
+  .status-bar {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 6px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    display: flex; gap: 12px; align-items: center;
+    flex-wrap: wrap;
+  }
+  .status-ok { color: var(--accent); }
+  .status-err { color: var(--red); }
+
+  /* ─── SCROLL TO TOP ───────────────────────── */
+  .scroll-top {
+    position: fixed;
+    bottom: 24px; left: 24px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s;
+    z-index: 200;
+    pointer-events: none;
+  }
+  .scroll-top.visible { opacity: 1; pointer-events: auto; }
+  .scroll-top:hover { background: var(--bg4); color: var(--accent); }
+
+  /* responsive */
+  @media (max-width: 480px) {
+    .header-inner { height: auto; padding: 8px 0; }
+    .cn-line { gap: 8px; padding: 8px 10px; }
+    .console-footer { font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="loading-bar" id="loadingBar"></div>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      VoltX Console
+    </div>
+    <div class="header-spacer"></div>
+    <span class="timer-display">Next: <b id="timerCount">5</b>s</span>
+    <div class="live-badge">
+      <span class="live-badge-dot"></span>
+      Live
+    </div>
+    <button class="refresh-btn" id="refreshBtn" title="Refresh now">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" data-tab="all">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      All
+      <span class="tab-count" id="count-all">0</span>
+    </button>
+    <button class="tab-btn" data-tab="facebook" style="--icon:#1877f2">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="#1877f2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      Facebook
+      <span class="tab-count" id="count-facebook">0</span>
+    </button>
+    <button class="tab-btn" data-tab="instagram">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="#e1306c"/></svg>
+      Instagram
+      <span class="tab-count" id="count-instagram">0</span>
+    </button>
+    <button class="tab-btn" data-tab="whatsapp">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      WhatsApp
+      <span class="tab-count" id="count-whatsapp">0</span>
+    </button>
+    <button class="tab-btn" data-tab="telegram">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="#2aabee"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 13.28l-2.963-.924c-.643-.204-.657-.643.136-.953l11.57-4.46c.537-.194 1.006.131.99.278z"/></svg>
+      Telegram
+      <span class="tab-count" id="count-telegram">0</span>
+    </button>
+    <button class="tab-btn" data-tab="twitter">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="#1da1f2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+      Twitter / X
+      <span class="tab-count" id="count-twitter">0</span>
+    </button>
+  </div>
+</div>
+
+<!-- BRAND HEADER (for filtered tabs) -->
+<div class="brand-header" id="brandHeader">
+  <div class="brand-title" id="brandTitle"></div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="status-bar" id="statusBar">
+  <span id="statusText">Connecting...</span>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-inner">
+    <span class="search-icon">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.34-4.34"/></svg>
+    </span>
+    <input class="search-input" id="searchInput" placeholder="Filter logs (sender, carrier, country, SMS…)" type="text">
+  </div>
+</div>
+
+<!-- CONSOLE -->
+<div class="console-wrap">
+  <div class="console-body">
+    <div id="consoleLogs">
+      <div class="empty-state">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19h8"/><path d="m4 17 6-6-6-6"/></svg>
+        <span>Loading console data…</span>
+      </div>
+    </div>
+    <div class="console-footer">
+      <span id="footerUpdated">Last Updated: —</span>
+      <span id="footerCount">Logs: 0</span>
+    </div>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ──────────────────────────────────────────────────────────
+   CONFIG
+────────────────────────────────────────────────────────── */
+const REFRESH_INTERVAL = 5000; // 5s
+const API_ENDPOINT = '/api/proxy';
+
+/* ──────────────────────────────────────────────────────────
+   STATE
+────────────────────────────────────────────────────────── */
+let allLogs = [];
+let activeTab = 'all';
+let searchQuery = '';
+let timerCount = 5;
+let isLoading = false;
+let lastUpdated = null;
+
+/* ──────────────────────────────────────────────────────────
+   APP DETECTION
+────────────────────────────────────────────────────────── */
+function detectApp(appText) {
+  const t = (appText || '').toLowerCase();
+  if (t.includes('facebook')) return 'facebook';
+  if (t.includes('instagram')) return 'instagram';
+  if (t.includes('whatsapp')) return 'whatsapp';
+  if (t.includes('telegram')) return 'telegram';
+  if (t.includes('twitter') || t.includes('twit')) return 'twitter';
+  return 'other';
+}
+
+function appClass(app) {
+  return `app-${app}`;
+}
+
+function appLabel(app) {
+  const map = {
+    facebook: 'Facebook', instagram: 'Instagram', whatsapp: 'WhatsApp',
+    telegram: 'Telegram', twitter: 'Twitter', other: '* * *'
+  };
+  return map[app] || app;
+}
+
+/* ──────────────────────────────────────────────────────────
+   PARSE HTML FROM SOURCE
+────────────────────────────────────────────────────────── */
+function parseHtmlLogs(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const lines = doc.querySelectorAll('.cn-line');
+  const logs = [];
+
+  lines.forEach(line => {
+    try {
+      const time = line.querySelector('.cn-line-time')?.textContent?.trim() || '';
+      const carrier = line.querySelector('.cn-line-carrier')?.textContent?.trim() || '';
+      const country = line.querySelector('.cn-line-numinfo')?.textContent?.trim() || '';
+      const appRaw = line.querySelector('.cn-line-app')?.textContent?.trim() || '';
+      const range = line.querySelector('.cn-line-range')?.textContent?.trim() || '';
+      const smsEl = line.querySelector('.cn-line-sms');
+      const sms = smsEl ? smsEl.textContent.replace('➜', '').trim() : '';
+
+      logs.push({
+        time, carrier, country,
+        app: detectApp(appRaw),
+        appRaw,
+        range,
+        sms
+      });
+    } catch (e) {}
+  });
+
+  return logs;
+}
+
+/* ──────────────────────────────────────────────────────────
+   PARSE JSON API RESPONSE
+────────────────────────────────────────────────────────── */
+function parseJsonLogs(data) {
+  // Handle various API response formats
+  let raw = [];
+  if (Array.isArray(data)) raw = data;
+  else if (data.logs) raw = data.logs;
+  else if (data.data) raw = Array.isArray(data.data) ? data.data : [data.data];
+  else if (data.items) raw = data.items;
+
+  return raw.map(item => ({
+    time: item.time || item.created_at || item.timestamp || '',
+    carrier: item.carrier || item.operator || '',
+    country: item.country || item.region || '',
+    app: detectApp(item.app || item.service || item.brand || ''),
+    appRaw: item.app || item.service || item.brand || '',
+    range: item.range || item.number_range || item.prefix || '',
+    sms: item.sms || item.message || item.body || '',
+  }));
+}
+
+/* ──────────────────────────────────────────────────────────
+   FETCH DATA
+────────────────────────────────────────────────────────── */
+async function fetchData() {
+  if (isLoading) return;
+  isLoading = true;
+  document.getElementById('loadingBar').classList.add('active');
+  document.getElementById('refreshBtn').classList.add('spinning');
+
+  try {
+    const res = await fetch(API_ENDPOINT, { cache: 'no-store' });
+    const json = await res.json();
+
+    let logs = [];
+
+    if (json.result) {
+      if (json.result.html) {
+        logs = parseHtmlLogs(json.result.html);
+      } else if (json.result.data) {
+        logs = parseJsonLogs(json.result.data);
+      }
+    }
+
+    // Fallback / demo data
+    if (json.logs && Array.isArray(json.logs)) {
+      logs = json.logs;
+    }
+
+    if (logs.length > 0) {
+      allLogs = logs;
+      lastUpdated = new Date();
+      updateStatus('ok', `Connected · ${logs.length} logs`);
+    } else {
+      updateStatus('err', json.message || 'No data received');
+      // Keep existing logs
+    }
+
+  } catch (err) {
+    updateStatus('err', `Fetch error: ${err.message}`);
+  } finally {
+    isLoading = false;
+    document.getElementById('loadingBar').classList.remove('active');
+    document.getElementById('refreshBtn').classList.remove('spinning');
+    renderLogs();
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   RENDER
+────────────────────────────────────────────────────────── */
+function getFilteredLogs() {
+  let logs = allLogs;
+
+  // Tab filter
+  if (activeTab !== 'all') {
+    logs = logs.filter(l => l.app === activeTab);
+  }
+
+  // Search filter
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    logs = logs.filter(l =>
+      l.carrier.toLowerCase().includes(q) ||
+      l.country.toLowerCase().includes(q) ||
+      l.range.toLowerCase().includes(q) ||
+      l.sms.toLowerCase().includes(q) ||
+      l.appRaw.toLowerCase().includes(q) ||
+      l.app.toLowerCase().includes(q)
+    );
+  }
+
+  return logs;
+}
+
+function renderLogs() {
+  const container = document.getElementById('consoleLogs');
+  const filtered = getFilteredLogs();
+
+  // Update counts
+  updateCounts();
+
+  // Footer
+  if (lastUpdated) {
+    const t = lastUpdated;
+    document.getElementById('footerUpdated').textContent =
+      `Last Updated: ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
+  }
+  document.getElementById('footerCount').textContent = `Logs: ${filtered.length} (Max ${allLogs.length})`;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19h8"/><path d="m4 17 6-6-6-6"/></svg>
+      <span>${allLogs.length === 0 ? 'Waiting for data…' : 'No logs match the filter'}</span>
+    </div>`;
+    return;
+  }
+
+  // Build HTML - don't re-render existing items to avoid scroll jump
+  const currentIds = new Set([...container.querySelectorAll('.cn-line')].map(el => el.dataset.id));
+  const frag = document.createDocumentFragment();
+  let hasNew = false;
+
+  filtered.forEach((log, i) => {
+    const id = `${log.time}-${log.range}-${i}`;
+    if (currentIds.has(id)) return;
+    hasNew = true;
+
+    const div = document.createElement('div');
+    div.className = 'cn-line';
+    div.dataset.id = id;
+    div.innerHTML = `
+      <div class="cn-line-meta">
+        <span class="cn-line-time">${escHtml(log.time)}</span>
+        <span class="cn-line-carrier">${escHtml(log.carrier)}</span>
+        <span class="cn-line-numinfo">${escHtml(log.country)}</span>
+      </div>
+      <div class="cn-line-body">
+        <div class="cn-line-tags">
+          <span class="cn-line-app ${appClass(log.app)}">${escHtml(appLabel(log.app))}</span>
+          <span class="cn-line-sep">::</span>
+          <span class="cn-line-range" role="button" tabindex="0" title="Tap to copy"
+            data-range="${escHtml(log.range)}"
+            onclick="copyRange(this)"
+            onkeydown="if(event.key==='Enter'||event.key===' ')copyRange(this)"
+          >${escHtml(log.range)}</span>
+        </div>
+        <p class="cn-line-sms"><span class="cn-arrow">➜</span>${escHtml(log.sms)}</p>
+      </div>`;
+    frag.appendChild(div);
+  });
+
+  if (hasNew) {
+    // Prepend new items (most recent first)
+    container.insertBefore(frag, container.firstChild);
+
+    // Remove excess if over limit (keep 100 visible)
+    const allLines = container.querySelectorAll('.cn-line');
+    if (allLines.length > 100) {
+      for (let i = 100; i < allLines.length; i++) {
+        allLines[i].remove();
+      }
+    }
+  }
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ──────────────────────────────────────────────────────────
+   COUNTS
+────────────────────────────────────────────────────────── */
+function updateCounts() {
+  const tabs = ['all','facebook','instagram','whatsapp','telegram','twitter'];
+  tabs.forEach(tab => {
+    let count = tab === 'all' ? allLogs.length : allLogs.filter(l => l.app === tab).length;
+    const el = document.getElementById(`count-${tab}`);
+    if (el) el.textContent = count;
+  });
+}
+
+/* ──────────────────────────────────────────────────────────
+   STATUS
+────────────────────────────────────────────────────────── */
+function updateStatus(type, msg) {
+  const el = document.getElementById('statusText');
+  el.className = type === 'ok' ? 'status-ok' : 'status-err';
+  el.textContent = msg;
+}
+
+/* ──────────────────────────────────────────────────────────
+   COPY RANGE
+────────────────────────────────────────────────────────── */
+function copyRange(el) {
+  const range = el.dataset.range;
+  navigator.clipboard.writeText(range).then(() => {
+    el.classList.add('copied');
+    el.textContent = '✓ Copied!';
+    showToast(`Copied: ${range}`);
+    setTimeout(() => {
+      el.classList.remove('copied');
+      el.textContent = range;
+    }, 1500);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = range;
+    ta.style.cssText = 'position:fixed;opacity:0;';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    el.classList.add('copied');
+    el.textContent = '✓ Copied!';
+    showToast(`Copied: ${range}`);
+    setTimeout(() => {
+      el.classList.remove('copied');
+      el.textContent = range;
+    }, 1500);
+  });
+}
+
+/* ──────────────────────────────────────────────────────────
+   TOAST
+────────────────────────────────────────────────────────── */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ──────────────────────────────────────────────────────────
+   TABS
+────────────────────────────────────────────────────────── */
+const brandMap = {
+  facebook: { label: '📘 Facebook', color: '#1877f2' },
+  instagram: { label: '📷 Instagram', color: '#e1306c' },
+  whatsapp: { label: '💬 WhatsApp', color: '#25d366' },
+  telegram: { label: '✈️ Telegram', color: '#2aabee' },
+  twitter: { label: '🐦 Twitter / X', color: '#1da1f2' },
+};
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeTab = btn.dataset.tab;
+
+    const bh = document.getElementById('brandHeader');
+    const bt = document.getElementById('brandTitle');
+    if (activeTab !== 'all' && brandMap[activeTab]) {
+      bh.classList.add('visible');
+      bt.innerHTML = `<span style="color:${brandMap[activeTab].color}">${brandMap[activeTab].label}</span>`;
+      bt.style.borderColor = brandMap[activeTab].color + '33';
+    } else {
+      bh.classList.remove('visible');
+    }
+
+    // Re-render from scratch for tab switch
+    document.getElementById('consoleLogs').innerHTML = '';
+    renderLogs();
+  });
+});
+
+/* ──────────────────────────────────────────────────────────
+   SEARCH
+────────────────────────────────────────────────────────── */
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value.trim();
+  document.getElementById('consoleLogs').innerHTML = '';
+  renderLogs();
+});
+
+/* ──────────────────────────────────────────────────────────
+   REFRESH BUTTON
+────────────────────────────────────────────────────────── */
+document.getElementById('refreshBtn').addEventListener('click', () => {
+  timerCount = 5;
+  fetchData();
+});
+
+/* ──────────────────────────────────────────────────────────
+   TIMER
+────────────────────────────────────────────────────────── */
+function startTimer() {
+  timerCount = 5;
+  setInterval(() => {
+    timerCount--;
+    document.getElementById('timerCount').textContent = timerCount;
+    if (timerCount <= 0) {
+      timerCount = 5;
+      fetchData();
+    }
+  }, 1000);
+}
+
+/* ──────────────────────────────────────────────────────────
+   SCROLL TO TOP
+────────────────────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTop');
+  if (window.scrollY > 300) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+});
+
+/* ──────────────────────────────────────────────────────────
+   INIT
+────────────────────────────────────────────────────────── */
+fetchData();
+startTimer();
+</script>
+</body>
+</html>
