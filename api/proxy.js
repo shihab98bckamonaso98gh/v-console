@@ -1,102 +1,209 @@
-// Real scraper – fetches live console data from the provided API
+// Real scraper for voltxsms.com – handles login, token, and console API
 const CONSOLE_API = 'https://api.2oo9.cloud/MXS47FLFX0U/tnevs/@public/api/console';
+const LOGIN_URL = 'https://voltxsms.com/m29/api/auth/login';
+const BASE_URL = 'https://voltxsms.com';
 
-// Helper to fetch with timeout
-async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+// Helper for fetch with timeout
+async function fetchWithTimeout(url, options = {}, timeout = 15000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   try {
-    const response = await fetch(url, { ...options, signal: controller.signal });
+    const res = await fetch(url, { ...options, signal: controller.signal });
     clearTimeout(id);
-    return response;
+    return res;
   } catch (err) {
     clearTimeout(id);
     throw err;
   }
 }
 
-// Generate demo data (only as last resort)
-function generateDemoLogs() {
-  const entries = [
-    { time: "14:23:01", carrier: "Orange", country: "Sierra Leone", appRaw: "Facebook", range: "23276XXX", sms: "<#> ***** is your Facebook code H29Q+Fsn4Sr" },
-    { time: "14:22:15", carrier: "Togocel", country: "Togo", appRaw: "Instagram", range: "228986XXX", sms: "*** *** is your Instagram code" },
-    { time: "14:21:42", carrier: "Babilon-M", country: "Tajikistan", appRaw: "Instagram", range: "992817XXX", sms: "****** is your security code" },
-    { time: "14:20:58", carrier: "Mobile", country: "Guinea", appRaw: "WhatsApp", range: "224659XXX", sms: "****** is your WhatsApp code" },
-    { time: "14:19:33", carrier: "Orange", country: "Ivory Coast", appRaw: "Facebook", range: "225077XXX", sms: "<#> ****** adalah kode Facebook Anda" },
-    { time: "14:18:17", carrier: "Ucell", country: "Uzbekistan", appRaw: "Telegram", range: "9989XXXXX", sms: "*****: Your Telegram code" },
-  ];
-  const now = Date.now();
-  return Array.from({ length: 50 }, (_, i) => {
-    const base = entries[i % entries.length];
-    const t = new Date(now - i * 5000);
-    return {
-      ...base,
-      time: `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`,
-    };
+// Login to voltxsms.com and return { token, cookies }
+async function login(email, password) {
+  // Step 1: GET the login page to obtain initial cookies and CSRF token (if needed)
+  let cookies = '';
+  let csrfToken = '';
+  try {
+    const initRes = await fetchWithTimeout(BASE_URL + '/m29/', {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+      },
+    });
+    const setCookie = initRes.headers.get('set-cookie');
+    if (setCookie) cookies = setCookie.split(';')[0];
+    const html = await initRes.text();
+    const csrfMatch = html.match(/name="csrf_token"\s+value="([^"]+)"/) ||
+                      html.match(/csrf_token["']?\s*:\s*["']([^"']+)["']/);
+    if (csrfMatch) csrfToken = csrfMatch[1];
+  } catch (err) {
+    console.error('Failed to fetch login page:', err.message);
+  }
+
+  // Step 2: POST login credentials (JSON)
+  const loginPayload = { email, password };
+  if (csrfToken) loginPayload.csrf_token = csrfToken;
+
+  const loginRes = await fetchWithTimeout(LOGIN_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json, text/plain, */*',
+      'User-Agent': 'Mozilla/5.0',
+      'Origin': BASE_URL,
+      'Referer': BASE_URL + '/m29/',
+      'Cookie': cookies,
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+    body: JSON.stringify(loginPayload),
   });
+
+  if (!loginRes.ok) {
+    const errorText = await loginRes.text();
+    throw new Error(`Login failed (${loginRes.status}): ${errorText.slice(0, 200)}`);
+  }
+
+  const loginData = await loginRes.json();
+  const token = loginData.token || loginData.access_token || loginData.data?.token;
+  if (!token) throw new Error('No token returned from login API');
+
+  // Merge any new cookies from login response
+  const newCookies = loginRes.headers.get('set-cookie');
+  if (newCookies) cookies = [cookies, newCookies.split(';')[0]].filter(Boolean).join('; ');
+
+  return { token, cookies };
 }
+
+// Fetch console logs using the authenticated API
+async function fetchConsole(token, cookies) {
+  // Try the provided console API first
+  try {
+    const res = await fetchWithTimeout(CONSOLE_API, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'Cookie': cookies,
+        'User-Agent': 'Mozilla/5.0',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      let logs = [];
+      if (Array.isArray(data)) logs = data;
+      else if (data.logs && Array.isArray(data.logs)) logs = data.logs;
+      else if (data.data && Array.isArray(data.data)) logs = data.data;
+      else if (data.items && Array.isArray(data.items)) logs = data.items;
+      if (logs.length) return logs;
+    }
+  } catch (err) {
+    console.error('Provided console API failed:', err.message);
+  }
+
+  // Fallback to the internal console endpoint
+  const internalApi = BASE_URL + '/m29/api/dialer/console';
+  const res = await fetchWithTimeout(internalApi, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${token}`,
+      'Cookie': cookies,
+      'User-Agent': 'Mozilla/5.0',
+      'X-Requested-With': 'XMLHttpRequest',
+      'Origin': BASE_URL,
+      'Referer': BASE_URL + '/m29/',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Console API returned ${res.status}`);
+  }
+
+  const data = await res.json();
+  let logs = [];
+  if (Array.isArray(data)) logs = data;
+  else if (data.logs && Array.isArray(data.logs)) logs = data.logs;
+  else if (data.data && Array.isArray(data.data)) logs = data.data;
+  else logs = [];
+
+  return logs;
+}
+
+// Transform raw logs to frontend format
+function transformLogs(rawLogs) {
+  return rawLogs.map(item => ({
+    time: item.time || item.created_at || item.timestamp || '',
+    carrier: item.carrier || item.operator || item.network || '',
+    country: item.country || item.location || '',
+    appRaw: item.app || item.service || item.brand || item.sender || '',
+    range: item.range || item.number_range || item.prefix || item.msisdn || '',
+    sms: item.sms || item.message || item.body || item.text || '',
+  })).filter(log => log.time || log.range);
+}
+
+// Session cache (in-memory, survives warm lambda)
+let session = {
+  token: null,
+  cookies: null,
+  expiresAt: 0,
+};
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  try {
-    // Fetch live data from the console API
-    const response = await fetchWithTimeout(CONSOLE_API, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'VoltX-Console/1.0',
-      },
-    });
+  const email = process.env.VOLTX_EMAIL;
+  const password = process.env.VOLTX_PASSWORD;
 
-    if (!response.ok) {
-      throw new Error(`API returned ${response.status}: ${response.statusText}`);
-    }
-
-    // Parse JSON – read body only once
-    const data = await response.json();
-    
-    // Extract logs array (handle different possible structures)
-    let logs = [];
-    if (Array.isArray(data)) logs = data;
-    else if (data.logs && Array.isArray(data.logs)) logs = data.logs;
-    else if (data.data && Array.isArray(data.data)) logs = data.data;
-    else if (data.results && Array.isArray(data.results)) logs = data.results;
-    else if (data.items && Array.isArray(data.items)) logs = data.items;
-    else logs = [];
-
-    // Transform to the format expected by frontend
-    const formattedLogs = logs.map(item => ({
-      time: item.time || item.created_at || item.timestamp || '',
-      carrier: item.carrier || item.operator || item.network || '',
-      country: item.country || item.location || '',
-      appRaw: item.app || item.service || item.brand || item.sender || '',
-      range: item.range || item.number_range || item.prefix || item.msisdn || '',
-      sms: item.sms || item.message || item.body || item.text || '',
-    })).filter(log => log.time || log.range); // remove completely empty
-
-    if (formattedLogs.length === 0) {
-      return res.status(200).json({
-        source: 'error',
-        logs: generateDemoLogs(),
-        error: 'API returned empty or malformed data',
-      });
-    }
-
-    // Success – return live data
-    return res.status(200).json({
-      source: 'live',
-      logs: formattedLogs,
-    });
-
-  } catch (err) {
-    console.error('Proxy error:', err.message);
+  if (!email || !password) {
     return res.status(200).json({
       source: 'error',
-      logs: generateDemoLogs(),
-      error: `Failed to fetch: ${err.message}`,
+      logs: [],
+      error: 'Missing VOLTX_EMAIL or VOLTX_PASSWORD environment variables',
+    });
+  }
+
+  const now = Date.now();
+  // Re-authenticate every 20 minutes
+  if (!session.token || now > session.expiresAt) {
+    try {
+      const { token, cookies } = await login(email, password);
+      session.token = token;
+      session.cookies = cookies;
+      session.expiresAt = now + 20 * 60 * 1000;
+    } catch (err) {
+      console.error('Login error:', err.message);
+      return res.status(200).json({
+        source: 'error',
+        logs: [],
+        error: `Login failed: ${err.message}. Check your credentials.`,
+      });
+    }
+  }
+
+  // Fetch live console logs
+  try {
+    const rawLogs = await fetchConsole(session.token, session.cookies);
+    const logs = transformLogs(rawLogs);
+    if (logs.length === 0) {
+      return res.status(200).json({
+        source: 'live',
+        logs: [],
+        note: 'No messages in console at this moment.',
+      });
+    }
+    return res.status(200).json({
+      source: 'live',
+      logs,
+    });
+  } catch (err) {
+    console.error('Console fetch error:', err.message);
+    return res.status(200).json({
+      source: 'error',
+      logs: [],
+      error: `Failed to fetch console: ${err.message}`,
     });
   }
 };
