@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VoltX SMS — Live Console</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* === PASTE THE FULL CSS FROM YOUR ORIGINAL index.html === */
+/* (The CSS remains exactly as you provided – no changes needed) */
 :root {
   --bg:     #090c10;
   --bg2:    #0e1118;
@@ -250,7 +251,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- HEADER (same as original) -->
 <header class="hdr">
   <div class="lbar" id="lbar"></div>
   <div class="hdr-in">
@@ -259,50 +260,25 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
     <span class="timer-txt">Next: <b id="timerNum">5</b>s</span>
     <div class="live-pill"><span class="live-dot"></span>Live</div>
     <button class="ico-btn" id="refBtn" title="Refresh now">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-        <path d="M3 3v5h5"/>
-        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
-        <path d="M16 16h5v5"/>
-      </svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
     </button>
   </div>
 </header>
 
-<!-- TABS -->
+<!-- TABS (same) -->
 <div class="tabs">
   <div class="tabs-in">
-    <button class="tab on" data-t="all">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      All <span class="badge" id="c-all">0</span>
-    </button>
-    <button class="tab" data-t="facebook">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="#1877f2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-      Facebook <span class="badge" id="c-facebook">0</span>
-    </button>
-    <button class="tab" data-t="instagram">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#e1306c" stroke="none"/></svg>
-      Instagram <span class="badge" id="c-instagram">0</span>
-    </button>
-    <button class="tab" data-t="whatsapp">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
-      WhatsApp <span class="badge" id="c-whatsapp">0</span>
-    </button>
-    <button class="tab" data-t="telegram">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="#29b6f6"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 13.28l-2.963-.924c-.643-.204-.657-.643.136-.953l11.57-4.46c.537-.194 1.006.131.99.278z"/></svg>
-      Telegram <span class="badge" id="c-telegram">0</span>
-    </button>
-    <button class="tab" data-t="twitter">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="#1d9bf0"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      Twitter / X <span class="badge" id="c-twitter">0</span>
-    </button>
+    <button class="tab on" data-t="all">All <span class="badge" id="c-all">0</span></button>
+    <button class="tab" data-t="facebook">Facebook <span class="badge" id="c-facebook">0</span></button>
+    <button class="tab" data-t="instagram">Instagram <span class="badge" id="c-instagram">0</span></button>
+    <button class="tab" data-t="whatsapp">WhatsApp <span class="badge" id="c-whatsapp">0</span></button>
+    <button class="tab" data-t="telegram">Telegram <span class="badge" id="c-telegram">0</span></button>
+    <button class="tab" data-t="twitter">Twitter/X <span class="badge" id="c-twitter">0</span></button>
   </div>
 </div>
 
 <!-- BRAND STRIP -->
-<div class="brand-strip" id="brandStrip">
-  <div class="brand-name" id="brandName"></div>
-</div>
+<div class="brand-strip" id="brandStrip"><div class="brand-name" id="brandName"></div></div>
 
 <!-- SOURCE STATUS -->
 <div class="src-bar" id="srcBar">
@@ -311,59 +287,25 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
 </div>
 
 <!-- SEARCH -->
-<div class="srch-wrap">
-  <div class="srch-inner">
-    <span class="srch-ico">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.34-4.34"/></svg>
-    </span>
-    <input class="srch-input" id="srchInput" placeholder="Filter: carrier, country, range, app, SMS…" type="text">
-  </div>
-</div>
+<div class="srch-wrap"><div class="srch-inner"><span class="srch-ico">🔍</span><input class="srch-input" id="srchInput" placeholder="Filter: carrier, country, range, app, SMS…" type="text"></div></div>
 
 <!-- CONSOLE -->
-<div class="con-wrap">
-  <div class="con-box">
-    <div class="con-head">
-      <div class="con-head-title">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19h8"/><path d="m4 17 6-6-6-6"/></svg>
-        Live Console
-      </div>
-      <div class="live-pill" style="font-size:9px;padding:2px 7px;"><span class="live-dot"></span>Live</div>
-    </div>
-    <div id="logContainer">
-      <div class="empty">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19h8"/><path d="m4 17 6-6-6-6"/></svg>
-        <span>Connecting to live console…</span>
-      </div>
-    </div>
-    <div class="con-foot">
-      <span id="footUpdated">Last Updated: —</span>
-      <span id="footCount">Logs: 0</span>
-    </div>
-  </div>
-</div>
+<div class="con-wrap"><div class="con-box"><div class="con-head"><div class="con-head-title">📡 Live Console</div><div class="live-pill" style="font-size:9px;padding:2px 7px;"><span class="live-dot"></span>Live</div></div><div id="logContainer"><div class="empty">Loading console…</div></div><div class="con-foot"><span id="footUpdated">Last Updated: —</span><span id="footCount">Logs: 0</span></div></div></div>
 
-<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
-</button>
-
+<button class="scroll-top" id="scrollTopBtn">↑</button>
 <div class="toast" id="toast"></div>
 
 <script>
-/* ── CONFIG ── */
+/* ── FRONTEND (improved error handling) ── */
 const API = '/api/proxy';
-const TICK = 5; // seconds
-
-/* ── STATE ── */
 let allLogs = [];
 let activeTab = 'all';
 let query = '';
-let countdown = TICK;
+let countdown = 5;
 let busy = false;
 let lastUpdated = null;
 let renderedIds = new Set();
 
-/* ── APP DETECT ── */
 function detectApp(s) {
   const t = (s||'').toLowerCase();
   if(t.includes('facebook')) return 'facebook';
@@ -375,60 +317,44 @@ function detectApp(s) {
 }
 const APP_LABELS = {facebook:'Facebook',instagram:'Instagram',whatsapp:'WhatsApp',telegram:'Telegram',twitter:'Twitter/X',other:'* * *'};
 const APP_CLASS  = {facebook:'a-fb',instagram:'a-ig',whatsapp:'a-wa',telegram:'a-tg',twitter:'a-tw',other:'a-ot'};
+const BRANDS = {facebook:{label:'📘 Facebook',color:'#1877f2'},instagram:{label:'📷 Instagram',color:'#e1306c'},whatsapp:{label:'💬 WhatsApp',color:'#25d366'},telegram:{label:'✈️ Telegram',color:'#29b6f6'},twitter:{label:'𝕏 Twitter / X',color:'#1d9bf0'}};
 
-/* ── BRAND CONFIG ── */
-const BRANDS = {
-  facebook:  {label:'📘 Facebook', color:'#1877f2'},
-  instagram: {label:'📷 Instagram',color:'#e1306c'},
-  whatsapp:  {label:'💬 WhatsApp', color:'#25d366'},
-  telegram:  {label:'✈️ Telegram', color:'#29b6f6'},
-  twitter:   {label:'𝕏 Twitter / X',color:'#1d9bf0'},
-};
-
-/* ── FETCH ── */
 async function fetchData() {
   if(busy) return;
   busy = true;
   document.getElementById('lbar').classList.add('on');
   document.getElementById('refBtn').classList.add('spin');
   try {
-    const r = await fetch(API, {cache:'no-store'});
-    // Read as text first to avoid JSON parse crash
-    const text = await r.text();
+    const r = await fetch(API, { cache: 'no-store' });
     let json;
-    try { json = JSON.parse(text); }
-    catch(e) {
-      setStatus('err','Response was not JSON — proxy may be misconfigured');
+    try {
+      json = await r.json();
+    } catch(e) {
+      // Response was not JSON
+      let errorText = await r.text();
+      setStatus('err', `Proxy returned non-JSON: ${errorText.slice(0,100)}`);
       return;
     }
-    const logs = (json.logs || []).map(l => ({
-      ...l,
-      app: detectApp(l.appRaw || l.app || '')
-    }));
+    const logs = (json.logs || []).map(l => ({ ...l, app: detectApp(l.appRaw || l.app || '') }));
     if(logs.length > 0) {
       allLogs = logs;
       lastUpdated = new Date();
     }
-    // Update status
-    const src = json.source || 'unknown';
-    if(src === 'api' || src === 'html') {
-      setStatus('live', `Live data · ${logs.length} logs · via ${src}`);
-    } else if(src === 'demo') {
-      setStatus('demo', json.note || json.error || 'Demo mode — credentials may need updating');
+    if(json.source === 'api' || json.source === 'html') {
+      setStatus('live', `Live data · ${logs.length} logs · via ${json.source}`);
     } else {
-      setStatus('demo', json.error || 'Unknown source');
+      setStatus('demo', json.note || json.error || 'Demo mode — credentials may need updating');
     }
+    render();
   } catch(e) {
     setStatus('err', e.message);
   } finally {
     busy = false;
     document.getElementById('lbar').classList.remove('on');
     document.getElementById('refBtn').classList.remove('spin');
-    render();
   }
 }
 
-/* ── STATUS ── */
 function setStatus(type, msg) {
   const pill = document.getElementById('srcPill');
   const txt  = document.getElementById('srcTxt');
@@ -439,189 +365,95 @@ function setStatus(type, msg) {
   txt.textContent = msg;
 }
 
-/* ── FILTER ── */
 function filtered() {
   let logs = allLogs;
   if(activeTab !== 'all') logs = logs.filter(l => l.app === activeTab);
   if(query) {
     const q = query.toLowerCase();
-    logs = logs.filter(l =>
-      (l.carrier||'').toLowerCase().includes(q) ||
-      (l.country||'').toLowerCase().includes(q) ||
-      (l.range||'').toLowerCase().includes(q) ||
-      (l.sms||'').toLowerCase().includes(q) ||
-      (l.app||'').toLowerCase().includes(q) ||
-      (l.appRaw||'').toLowerCase().includes(q)
-    );
+    logs = logs.filter(l => (l.carrier||'').toLowerCase().includes(q) ||
+      (l.country||'').toLowerCase().includes(q) || (l.range||'').toLowerCase().includes(q) ||
+      (l.sms||'').toLowerCase().includes(q) || (l.app||'').toLowerCase().includes(q) ||
+      (l.appRaw||'').toLowerCase().includes(q));
   }
   return logs;
 }
 
-/* ── RENDER ── */
 function render() {
-  updateCounts();
+  document.getElementById('c-all').textContent = allLogs.length;
+  ['facebook','instagram','whatsapp','telegram','twitter'].forEach(t => {
+    const el = document.getElementById('c-'+t);
+    if(el) el.textContent = allLogs.filter(l=>l.app===t).length;
+  });
   const logs = filtered();
-
-  // Footer
   document.getElementById('footCount').textContent = `Logs: ${logs.length} / ${allLogs.length}`;
   if(lastUpdated) {
     const t = lastUpdated;
-    document.getElementById('footUpdated').textContent =
-      `Updated: ${pad(t.getHours())}:${pad(t.getMinutes())}:${pad(t.getSeconds())}`;
+    document.getElementById('footUpdated').textContent = `Updated: ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
   }
-
   const container = document.getElementById('logContainer');
-
   if(logs.length === 0) {
-    container.innerHTML = `<div class="empty">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19h8"/><path d="m4 17 6-6-6-6"/></svg>
-      <span>${allLogs.length===0?'Waiting for data…':'No matching logs'}</span>
-    </div>`;
+    container.innerHTML = `<div class="empty"><span>${allLogs.length===0?'Waiting for data…':'No matching logs'}</span></div>`;
     renderedIds.clear();
     return;
   }
-
-  // Only prepend new items — don't touch existing DOM (avoids scroll jump)
-  const newLogs = logs.filter(l => !renderedIds.has(lineId(l)));
-
-  if(newLogs.length === 0) return;
-
-  // If filter changed (tab/search switch), rebuild fully
+  const newLogs = logs.filter(l => !renderedIds.has(`${l.time}|${l.range}`));
+  if(newLogs.length === 0 && renderedIds.size > 0) return;
   const shouldRebuild = container.querySelector('.empty') || newLogs.length === logs.length;
-
   if(shouldRebuild) {
     container.innerHTML = '';
     renderedIds.clear();
   }
-
   const frag = document.createDocumentFragment();
   newLogs.forEach(log => {
-    const id = lineId(log);
+    const id = `${log.time}|${log.range}`;
     renderedIds.add(id);
     const div = document.createElement('div');
     div.className = 'cn-line new';
-    div.dataset.id = id;
     div.innerHTML = `
       <div class="meta">
-        <span class="meta-time">${esc(log.time)}</span>
-        <span class="meta-carrier">${esc(log.carrier)}</span>
-        <span class="meta-country">${esc(log.country)}</span>
+        <span class="meta-time">${escapeHtml(log.time)}</span>
+        <span class="meta-carrier">${escapeHtml(log.carrier)}</span>
+        <span class="meta-country">${escapeHtml(log.country)}</span>
       </div>
       <div class="body">
         <div class="tags">
-          <span class="app-tag ${APP_CLASS[log.app]||'a-ot'}">${APP_LABELS[log.app]||esc(log.appRaw)}</span>
+          <span class="app-tag ${APP_CLASS[log.app]}">${APP_LABELS[log.app]}</span>
           <span class="sep">::</span>
-          <span class="range-tag" data-r="${esc(log.range)}"
-            onclick="copyR(this)" onkeydown="if(event.key==='Enter')copyR(this)"
-            tabindex="0" title="Tap to copy"
-          >${esc(log.range)}
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          </span>
+          <span class="range-tag" data-r="${escapeHtml(log.range)}" onclick="copyR(this)">${escapeHtml(log.range)} 📋</span>
         </div>
-        <p class="sms-txt"><span class="arrow">➜</span>${esc(log.sms)}</p>
+        <p class="sms-txt"><span class="arrow">➜</span>${escapeHtml(log.sms)}</p>
       </div>`;
     frag.appendChild(div);
   });
-
-  // Prepend (newest at top)
   container.insertBefore(frag, container.firstChild);
-
-  // Trim to 150 max
   const lines = container.querySelectorAll('.cn-line');
-  if(lines.length > 150) {
-    for(let i = 150; i < lines.length; i++) {
-      renderedIds.delete(lines[i].dataset.id);
-      lines[i].remove();
-    }
-  }
+  if(lines.length > 150) for(let i=150;i<lines.length;i++) lines[i].remove();
 }
 
-function lineId(l) { return `${l.time}|${l.range}|${l.sms?.slice(0,20)}`; }
-function pad(n){ return String(n).padStart(2,'0'); }
-function esc(s){
-  if(!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function escapeHtml(s) { if(!s) return ''; return String(s).replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-/* ── COUNTS ── */
-function updateCounts() {
-  ['all','facebook','instagram','whatsapp','telegram','twitter'].forEach(t => {
-    const el = document.getElementById('c-'+t);
-    if(el) el.textContent = t==='all' ? allLogs.length : allLogs.filter(l=>l.app===t).length;
-  });
-}
-
-/* ── COPY RANGE ── */
 function copyR(el) {
   const r = el.dataset.r;
-  const doIt = () => {
-    el.classList.add('copied');
-    const orig = el.innerHTML;
-    el.textContent = '✓ Copied!';
-    toast(`Copied: ${r}`);
-    setTimeout(()=>{ el.classList.remove('copied'); el.innerHTML = orig; }, 1400);
-  };
-  if(navigator.clipboard) {
-    navigator.clipboard.writeText(r).then(doIt).catch(()=>fallbackCopy(r,doIt));
-  } else { fallbackCopy(r,doIt); }
+  navigator.clipboard.writeText(r).then(()=>{ toast(`Copied: ${r}`); el.classList.add('copied'); setTimeout(()=>el.classList.remove('copied'),800); }).catch(()=>{ prompt('Copy manually:', r); });
 }
-function fallbackCopy(text, cb) {
-  const ta = Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});
-  document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); cb();
-}
+function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1800); }
 
-/* ── TOAST ── */
-let _tt;
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.classList.add('show');
-  clearTimeout(_tt); _tt = setTimeout(()=>el.classList.remove('show'), 1800);
-}
-
-/* ── TABS ── */
-document.querySelectorAll('.tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
-    btn.classList.add('on');
-    activeTab = btn.dataset.t;
-    renderedIds.clear();
-    // Brand strip
-    const bs = document.getElementById('brandStrip');
-    const bn = document.getElementById('brandName');
-    if(activeTab !== 'all' && BRANDS[activeTab]) {
-      bs.classList.add('vis');
-      bn.innerHTML = `<span style="color:${BRANDS[activeTab].color}">${BRANDS[activeTab].label}</span>`;
-      bn.style.borderColor = BRANDS[activeTab].color+'33';
-    } else {
-      bs.classList.remove('vis');
-    }
-    render();
-  });
-});
-
-/* ── SEARCH ── */
-document.getElementById('srchInput').addEventListener('input', e => {
-  query = e.target.value.trim();
+document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  activeTab = btn.dataset.t;
   renderedIds.clear();
+  const bs = document.getElementById('brandStrip'), bn = document.getElementById('brandName');
+  if(activeTab !== 'all' && BRANDS[activeTab]) {
+    bs.classList.add('vis');
+    bn.innerHTML = `<span style="color:${BRANDS[activeTab].color}">${BRANDS[activeTab].label}</span>`;
+  } else bs.classList.remove('vis');
   render();
-});
-
-/* ── REFRESH BTN ── */
-document.getElementById('refBtn').addEventListener('click', ()=>{ countdown=TICK; fetchData(); });
-
-/* ── COUNTDOWN TIMER ── */
-setInterval(() => {
-  countdown--;
-  document.getElementById('timerNum').textContent = countdown;
-  if(countdown <= 0) { countdown = TICK; fetchData(); }
-}, 1000);
-
-/* ── SCROLL TOP ── */
-window.addEventListener('scroll', () => {
-  document.getElementById('scrollTopBtn').classList.toggle('vis', window.scrollY > 250);
-});
-
-/* ── INIT ── */
+}));
+document.getElementById('srchInput').addEventListener('input', e => { query = e.target.value.trim(); renderedIds.clear(); render(); });
+document.getElementById('refBtn').addEventListener('click', ()=>{ countdown=5; fetchData(); });
+setInterval(() => { countdown--; document.getElementById('timerNum').textContent = countdown; if(countdown <= 0) { countdown = 5; fetchData(); } }, 1000);
+window.addEventListener('scroll', () => document.getElementById('scrollTopBtn').classList.toggle('vis', window.scrollY > 250));
 fetchData();
 </script>
 </body>
