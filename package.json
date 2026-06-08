@@ -1,11 +1,5 @@
 {
   "name": "voltx-console",
   "version": "1.0.0",
-  "description": "VoltX SMS Live Console Mirror",
-  "scripts": {
-    "dev": "vercel dev"
-  },
-  "engines": {
-    "node": "20.x"
-  }
+  "engines": { "node": "20.x" }
 }
