@@ -2,15 +2,10 @@
   "name": "voltx-console",
   "version": "1.0.0",
   "description": "VoltX SMS Live Console Mirror",
-  "main": "api/proxy.js",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "node api/proxy.js"
-  },
-  "dependencies": {
-    "node-fetch": "^2.7.0"
+    "dev": "vercel dev"
   },
   "engines": {
-  "node": "24.x"
+    "node": "24.x"
   }
 }
